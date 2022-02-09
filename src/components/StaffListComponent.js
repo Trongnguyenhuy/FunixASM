@@ -21,7 +21,7 @@ class  StaffList extends Component {
         if (staff != null){
             return(
                 <Card className="mb-2" border="success">
-                    <CardHeader>Họ và tên: {staff.name}</CardHeader>
+                    <CardHeader><b>Họ và tên: {staff.name}</b></CardHeader>
                     <CardBody>
                         <CardText>Ngày Sinh: {dateFormat(staff.doB,"dd/mm/yyyy")}</CardText>
                         <CardText>Ngày vào công ty: {dateFormat(staff.startDate,"dd/mm/yyyy")}</CardText>
@@ -46,10 +46,7 @@ class  StaffList extends Component {
                 <div className="col-12 col-md-4 col-lg-3 m-1">
                     <Card key={staff.id} 
                         onClick={() => this.onStaffSelect(staff)}>
-                        {/* <CardImg width="100%" src={staff.image} alt={staff.name} /> */}
-                        {/* <CardImgOverlay> */}
-                            <CardBody>{staff.name}</CardBody>
-                        {/* </CardImgOverlay> */}
+                        <CardHeader>{staff.name}</CardHeader>
                     </Card>
                 </div>
             );
