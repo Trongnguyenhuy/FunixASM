@@ -20,7 +20,7 @@ class  StaffList extends Component {
     renderStaff(staff) {
         if (staff != null){
             return(
-                <Card className="mb-2" border="success">
+                <Card className="mb-2" border="success" bg="primary">
                     <CardHeader><b>Họ và tên: {staff.name}</b></CardHeader>
                     <CardBody>
                         <CardText>Ngày Sinh: {dateFormat(staff.doB,"dd/mm/yyyy")}</CardText>
@@ -43,7 +43,7 @@ class  StaffList extends Component {
     render() {
         const menu = this.props.staffs.map((staff) =>{
             return (
-                <div className="col-12 col-md-4 col-lg-3 m-1">
+                <div className="col-12 col-md-4 col-lg-2 m-1">
                     <Card key={staff.id} 
                         onClick={() => this.onStaffSelect(staff)}>
                         <CardHeader>{staff.name}</CardHeader>
