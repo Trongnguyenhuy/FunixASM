@@ -20,7 +20,7 @@ class  StaffList extends Component {
     renderStaff(staff) {
         if (staff != null){
             return(
-                <Card className="mb-2" border="success" bg="primary">
+                <Card className="mt-2" bg="primary">
                     <CardHeader><b>Họ và tên: {staff.name}</b></CardHeader>
                     <CardBody>
                         <CardText>Ngày Sinh: {dateFormat(staff.doB,"dd/mm/yyyy")}</CardText>
@@ -45,7 +45,9 @@ class  StaffList extends Component {
             return (
                 <div className="col-12 col-md-4 col-lg-2 mt-1">
                     <Card key={staff.id} 
-                        onClick={() => this.onStaffSelect(staff)}>
+                        onClick={() => this.onStaffSelect(staff)}
+                        style={{cursor:'pointer'}}
+                        className="bg-danger border border-light text-center">
                         <CardHeader>{staff.name}</CardHeader>
                     </Card>
                 </div>
@@ -57,7 +59,7 @@ class  StaffList extends Component {
                 <div className="row">
                     {menu}
                 </div>
-                <div className="row">
+                <div className="row justify-content-center">
                     <div className="col-12 col-md-6 m1-1">
                         {this.renderStaff(this.state.selectStaff)}
                     </div>
