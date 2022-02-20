@@ -42,31 +42,34 @@ class StaffList extends Component {
         }
     }
 
-    render() {
-        const menu = this.props.staffs.map((staff, index) => {
-            return (
-                <div className="col-12 col-md-4 col-lg-2 mt-1"
-                    key={staff.id}>
-                    <div className="card border border-dark"
-                        onClick={() => this.onStaffSelect(staff)}
-                        style={{ cursor: 'pointer', height: '300px', width: '100%' }}>
-                        <img className="card-img-top" src={staff.image} alt={staff.name}
-                            style={{ width: '100%' }} />
-                        <div className="card-body bg-secondary p-2">
-                            <h4 className="card-title text-center">{staff.name}</h4>
-                            <span className="card-text">
-                                Department: {staff.department.name}
-                            </span>
+    renderListStaff = () => {
+            return this.props.staffs.map((staff) => {
+                return (
+                    <div className="col-12 col-md-4 col-lg-2 mt-1"
+                        key={staff.id}>
+                        <div className="card border border-dark"
+                            onClick={() => this.onStaffSelect(staff)}
+                            style={{ cursor: 'pointer', height: '300px', width: '100%' }}>
+                            <img className="card-img-top" src={staff.image} alt={staff.name}
+                                style={{ width: '100%' }} />
+                            <div className="card-body bg-secondary p-2">
+                                <h4 className="card-title text-center">{staff.name}</h4>
+                                <span className="card-text">
+                                    Department: {staff.department.name}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            );
-        });
+                );
+            });
+    }
+
+    render() {
 
         return (
             <div className="container">
                 <div className="row">
-                    {menu}
+                    {this.renderListStaff()}
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-12 col-md-6 m1-1">
