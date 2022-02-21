@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { STAFFS, DEPARTMENTS } from './shared/staffs';
 import StaffList from './components/StaffListComponent';
 import NavbarComponent from './components/NavbarComponent';
+import Footer from './components/footerComponent';
 
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
         <div style={{ backgroundColor: 'rgba(0,0,0,0.7)', minheight: '2000px' }}>
           <NavbarComponent />
           <StaffList staffs={this.state.staffs} department={this.state.department} />
+          <Footer />
         </div>
       </div>
     );

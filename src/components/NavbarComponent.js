@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPiggyBank, faIdCard, faUserTie } from "@fortawesome/free-solid-svg-icons";
 
-export default class NavbarComponent extends Component {
+export default class Navbar extends Component {
     render() {
         return (
             <div>
