@@ -1,6 +1,4 @@
-import react, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Component } from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import { STAFFS, DEPARTMENTS } from './shared/staffs';
 import StaffList from './components/StaffListComponent';

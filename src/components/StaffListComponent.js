@@ -1,8 +1,5 @@
-import react, { Component } from "react";
-import {
-    Card, CardImg, CardImgOverlay, CardText, CardBody,
-    CardTitle, CardHeader
-} from "reactstrap";
+import { Component } from "react";
+import { Card, CardText, CardBody, CardHeader} from "reactstrap";
 import dateFormat from 'dateformat';
 
 class StaffList extends Component {
@@ -22,7 +19,7 @@ class StaffList extends Component {
     renderStaff(staff) {
         if (staff != null) {
             return (
-                <Card className="mt-2 bg-secondary border border-dark">
+                <Card className="mt-2 border border-dark">
                     <CardHeader><b>Họ và tên: {staff.name}</b></CardHeader>
                     <CardBody>
                         <CardText>Ngày Sinh: {dateFormat(staff.doB, "dd/mm/yyyy")}</CardText>
