@@ -3,6 +3,7 @@ import { STAFFS, DEPARTMENTS } from './shared/staffs';
 import StaffList from './components/StaffListComponent';
 import NavbarComponent from './components/NavbarComponent';
 import Footer from './components/footerComponent';
+import StaffInfo from './components/StaffInfo';
 
 
 class App extends Component {
@@ -11,9 +12,15 @@ class App extends Component {
     super(props);
     this.state = {
       staffs: STAFFS,
-      department: DEPARTMENTS
+      department: DEPARTMENTS,
+      selectStaff: null
     };
   }
+
+  onStaffSelect(staffId) {
+    this.setState({ selectStaff: staffId });
+  }
+
 
   render() {
     return (
@@ -21,7 +28,11 @@ class App extends Component {
         style={{ backgroundImage: 'url(./assets/images/employeeCard.jpg)' }}>
         <div style={{ backgroundColor: 'rgba(0,0,0,0.7)', minheight: '2000px' }}>
           <NavbarComponent />
-          <StaffList staffs={this.state.staffs} department={this.state.department} />
+          <StaffInfo staff={this.state.staffs.filter(
+            (staff) => staff.id === this.state.selectStaff)[0]}/>
+          <StaffList staffs={this.state.staffs}
+            department={this.state.department}
+            onClick={(staffId) => this.onStaffSelect(staffId)} />
           <Footer />
         </div>
       </div>
