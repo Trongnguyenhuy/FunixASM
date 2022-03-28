@@ -4,7 +4,7 @@ import StaffList from './StaffListComponent';
 import DetailStaff from './DetailStaffComponent';
 import { STAFFS, DEPARTMENTS } from '../shares/staffs';
 import Header from './HeaderComponent';
-import Footer from './FooterComponent';
+import Footer from './footerComponent';
 import Department from './DepartmentComponent';
 import Salary from './SalaryComponent';
 import { Switch, Route, Redirect } from 'react-router-dom';
