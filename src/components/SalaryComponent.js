@@ -15,17 +15,19 @@ export default function Salary(props) {
 
     const salary = props.staffs.map((item) => {
         return (
-            <Card key={item.id} className='col-12 col-sm-6 col-md-4 mt-1'>
-                <CardBody>
-                    <CardTitle tag='h5'>{item.name}</CardTitle>
-                    <CardText>Mã số nhân viên: {item.id}</CardText>
-                    <CardText>Hệ số lương: {item.salaryScale}</CardText>
-                    <CardText>Số giờ làm thêm: {item.overTime}</CardText>
-                </CardBody>
-                <CardFooter>
-                    <strong>Lương:</strong> {salaryCalculate(parseInt(item.salaryScale), parseInt(item.overTime))}<strong> VND</strong>
-                </CardFooter>
-            </Card>
+            <div key={item.id} className='col-12 col-sm-6 col-md-4 mt-1'>
+                <Card>
+                    <CardBody>
+                        <CardTitle tag='h5'>{item.name}</CardTitle>
+                        <CardText>Mã số nhân viên: {item.id}</CardText>
+                        <CardText>Hệ số lương: {item.salaryScale}</CardText>
+                        <CardText>Số giờ làm thêm: {item.overTime}</CardText>
+                    </CardBody>
+                    <CardFooter>
+                        <strong>Lương:</strong> {salaryCalculate(parseInt(item.salaryScale), parseInt(item.overTime))}<strong> VND</strong>
+                    </CardFooter>
+                </Card>
+            </div>
         );
     })
 
@@ -37,7 +39,7 @@ export default function Salary(props) {
                     <BreadcrumbItem>
                     </BreadcrumbItem>
                     <BreadcrumbItem>
-                    Bảng Lương
+                        Bảng Lương
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>

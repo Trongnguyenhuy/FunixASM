@@ -6,15 +6,17 @@ import { Link } from 'react-router-dom';
 
 export default function Department(props) {
     document.title = `Phòng Ban || Ứng dụng quản lý nhân sự`;
-    
+
     const department = props.departments.map((item, index) => {
         return (
-            <Card key={index} className='col-12 col-sm-6 col-md-4 mt-1'>
-                <CardBody>
-                    <CardTitle tag='h5'>{item.name}</CardTitle>
-                    <CardText>Số lượng nhân viên: {props.staffs.filter((staff) => staff.department.name === item.name).length}</CardText>
-                </CardBody>
-            </Card>
+            <div key={index} className='col-12 col-sm-6 col-md-4 mt-1'>
+                <Card>
+                    <CardBody>
+                        <CardTitle tag='h5'>{item.name}</CardTitle>
+                        <CardText>Số lượng nhân viên: {props.staffs.filter((staff) => staff.department.name === item.name).length}</CardText>
+                    </CardBody>
+                </Card>
+            </div>
         );
     })
     return (
@@ -25,7 +27,7 @@ export default function Department(props) {
                     <BreadcrumbItem>
                     </BreadcrumbItem>
                     <BreadcrumbItem>
-                        Phòng Ban 
+                        Phòng Ban
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>
