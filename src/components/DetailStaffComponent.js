@@ -12,7 +12,7 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
-const RenderDetailStaff = ({ item,toggleModal }) => {
+const RenderDetailStaff = ({ item, toggleModal }) => {
 
   document.title = `${item.name} || Ứng dụng quản lý nhân sự`;
 
@@ -24,51 +24,53 @@ const RenderDetailStaff = ({ item,toggleModal }) => {
           <BreadcrumbItem>
           </BreadcrumbItem>
           <BreadcrumbItem>
-          {item.name}
+            {item.name}
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
       <div className="row">
-        <Card
-          body
-          style={{
-            borderColor: '#333'
-          }}
-        >
-          <CardBody className="row">
-            <div className="col-12 col-md-3 col-sm-4">
-              <CardImg
-                alt={item.name}
-                src={item.image}
-                top
-                width="100%"
-              />
-            </div>
-            <div className="col-12 col-md-9 col-sm-8">
-              <CardTitle tag="h5">
-                {item.name}
-              </CardTitle>
-              <CardText>
-                Ngày sinh: {dateFormat(item.doB, 'dd/mm/yyyy')}
-              </CardText>
-              <CardText>
-                Ngày vào công ty: {dateFormat(item.startDate, 'dd/mm/yyyy')}
-              </CardText>
-              <CardText>
-                Phòng ban: {item.department.name}
-              </CardText>
-              <CardText>
-                Số ngày nghỉ còn lại: {item.annualLeave}
-              </CardText>
-              <CardText>
-                Số ngày đã làm thêm: {item.overTime}
-              </CardText>
-              <Button onClick={() => { toggleModal() }}>
-                Cập nhật
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
+        <div className="col-12">
+          <Card
+            body
+            style={{
+              borderColor: '#333'
+            }}
+          >
+            <CardBody className="row">
+              <div className="col-12 col-md-3 col-sm-4">
+                <CardImg
+                  alt={item.name}
+                  src={item.image}
+                  top
+                  width="100%"
+                />
+              </div>
+              <div className="col-12 col-md-9 col-sm-8">
+                <CardTitle tag="h5">
+                  {item.name}
+                </CardTitle>
+                <CardText>
+                  Ngày sinh: {dateFormat(item.doB, 'dd/mm/yyyy')}
+                </CardText>
+                <CardText>
+                  Ngày vào công ty: {dateFormat(item.startDate, 'dd/mm/yyyy')}
+                </CardText>
+                <CardText>
+                  Phòng ban: {item.department.name}
+                </CardText>
+                <CardText>
+                  Số ngày nghỉ còn lại: {item.annualLeave}
+                </CardText>
+                <CardText>
+                  Số ngày đã làm thêm: {item.overTime}
+                </CardText>
+                <Button onClick={() => { toggleModal() }}>
+                  Cập nhật
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
       </div>
     </React.Fragment>
   );

@@ -26,35 +26,32 @@ const RenderStaff = ({ staffs, removeStaff }) => {
     } else {
         const staff = staffs.map((item) => {
             return (
-                <Card key={item.id} className='col-12 col-md-4 col-lg-2'
-                    style={{
-                        textAlign: 'center',
-                        margin: '0.015px'
-                    }}
-                >
-                    <Link to={`/stafflist/${item.id}`}>
-                        <CardImg
-                            alt={item.name}
-                            src={item.image}
-                            top
-                            width="100%"
-                            height="auto"
-                        />
-                    </Link>
-                    <CardBody>
-                        <CardTitle tag="h6"
-                            style={{
-                                color: 'black'
-                            }}
-                        >
-                            {item.name}
-                        </CardTitle>
-                        <Button onClick={() => { removeStaff(item.id) }}
-                        >
-                            Xóa
-                        </Button>
-                    </CardBody>
-                </Card>
+                <div key={item.id} className='col-12 col-md-4 col-lg-2'>
+                    <Card className='m-1'>
+                        <Link to={`/stafflist/${item.id}`}>
+                            <CardImg
+                                alt={item.name}
+                                src={item.image}
+                                top
+                                width="100%"
+                                height="auto"
+                            />
+                        </Link>
+                        <CardBody>
+                            <CardTitle tag="h6"
+                                style={{
+                                    color: 'black'
+                                }}
+                            >
+                                {item.name}
+                            </CardTitle>
+                            <Button onClick={() => { removeStaff(item.id) }}
+                            >
+                                Xóa
+                            </Button>
+                        </CardBody>
+                    </Card>
+                </div>
             );
         });
 
@@ -93,7 +90,7 @@ class StaffList extends Component {
     }
 
     render() {
-        
+
         document.title = `Nhân Viên || Ứng dụng quản lý nhân sự`;
 
         return (
