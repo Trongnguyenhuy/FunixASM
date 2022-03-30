@@ -8,14 +8,20 @@ import {
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import dateFormat from 'dateformat';
 import { Link } from 'react-router-dom';
+import Loading from './LoadingComponent';
+import { FadeTransform } from 'react-animation-components';
+
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
-const RenderDetailStaff = ({ item,toggleModal }) => {
+const findDepartment = (departmentId, departments) => {
+  const department = departments.filter((item) => item.id === departmentId)[0];
 
-  document.title = `${item.name} || Ứng dụng quản lý nhân sự`;
+  return department.name;
+}
 
+const RenderDetailStaff = ({ item, toggleModal, departments }) => {
   return (
     <React.Fragment>
       <div className="row mt-2">
@@ -24,53 +30,61 @@ const RenderDetailStaff = ({ item,toggleModal }) => {
           <BreadcrumbItem>
           </BreadcrumbItem>
           <BreadcrumbItem>
-          {item.name}
+            {item.name}
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
       <div className="row">
-        <Card
-          body
-          style={{
-            borderColor: '#333'
-          }}
-        >
-          <CardBody className="row">
-            <div className="col-12 col-md-3 col-sm-4">
-              <CardImg
-                alt={item.name}
-                src={item.image}
-                top
-                width="100%"
-              />
-            </div>
-            <div className="col-12 col-md-9 col-sm-8">
-              <CardTitle tag="h5">
-                {item.name}
-              </CardTitle>
-              <CardText>
-                Ngày sinh: {dateFormat(item.doB, 'dd/mm/yyyy')}
-              </CardText>
-              <CardText>
-                Ngày vào công ty: {dateFormat(item.startDate, 'dd/mm/yyyy')}
-              </CardText>
-              <CardText>
-                Phòng ban: {item.department.name}
-              </CardText>
-              <CardText>
-                Số ngày nghỉ còn lại: {item.annualLeave}
-              </CardText>
-              <CardText>
-                Số ngày đã làm thêm: {item.overTime}
-              </CardText>
-              <Button onClick={() => { toggleModal() }}>
-                Cập nhật
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    </React.Fragment>
+        <div className="col-12">
+          <FadeTransform in
+            transformProps={{
+              exitTransform: 'scale(0.5) translateY(-50%)'
+            }}
+          >
+            <Card
+              body
+              style={{
+                borderColor: '#333'
+              }}
+            >
+              <CardBody className="row">
+                <div className="col-12 col-md-7 col-sm-7">
+                  <CardImg
+                    alt={item.name}
+                    src={item.image}
+                    top
+                    width="100%"
+                  />
+                </div>
+                <div className="col-12 col-md-5 col-sm-5 align-self-center">
+                  <CardTitle tag="h5">
+                    {item.name}
+                  </CardTitle>
+                  <CardText>
+                    Ngày sinh: {dateFormat(item.doB, 'dd/mm/yyyy')}
+                  </CardText>
+                  <CardText>
+                    Ngày vào công ty: {dateFormat(item.startDate, 'dd/mm/yyyy')}
+                  </CardText>
+                  <CardText>
+                    Phòng ban: {findDepartment(item.departmentId, departments)}
+                  </CardText>
+                  <CardText>
+                    Số ngày nghỉ còn lại: {item.annualLeave}
+                  </CardText>
+                  <CardText>
+                    Số ngày đã làm thêm: {item.overTime}
+                  </CardText>
+                  <Button onClick={() => { toggleModal() }}>
+                    Cập nhật
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          </FadeTransform>
+        </div>
+      </div >
+    </React.Fragment >
   );
 }
 
@@ -103,17 +117,29 @@ export default class DetailStaff extends Component {
   }
 
   render() {
-    if (this.props.item === undefined) {
-      return (
-        <div className="text-center">
-          <h3>Nhân viên không tồn tại !!!</h3>
-        </div>
-      );
-    } else {
+    if (this.props.staffIsLoading || this.props.departmentIsLoading) {
       return (
         <div className="container">
-          <RenderDetailStaff item={this.props.item}
-            removeStaff={this.props.removeStaff}
+          <div className="row">
+            <Loading />
+          </div>
+        </div>
+      );
+    } else if (this.props.staffErrMess !== null || this.props.departmentErrMess !== null) {
+
+      const errMess = this.props.staffErrMess !== null ? this.props.staffErrMess : this.props.departmentErrMess;
+      return (
+        <div className="container">
+          <div className="row">
+            <h4>{errMess}</h4>
+          </div>
+        </div>
+      );
+    } else if (this.props.staff !== null && this.props.departments !== null) {
+      return (
+        <div className="container">
+          <RenderDetailStaff item={this.props.staff}
+            departments={this.props.departments}
             toggleModal={this.toggleModal}
           />
           <Modal isOpen={this.state.isModalOpen}
@@ -130,7 +156,7 @@ export default class DetailStaff extends Component {
                     <Control.text model=".name"
                       className="form-control"
                       name="name"
-                      defaultValue={this.props.item.name}
+                      defaultValue={this.props.staff.name}
                       validators={{
                         required,
                         MinLength: minLength(2),
@@ -156,7 +182,7 @@ export default class DetailStaff extends Component {
                       type="date"
                       className="form-control"
                       name='doB'
-                      defaultValue={this.props.item.doB}
+                      defaultValue={this.props.staff.doB}
                       validators={{
                         required
                       }}
@@ -178,7 +204,7 @@ export default class DetailStaff extends Component {
                       type="date"
                       className="form-control"
                       name="startDate"
-                      defaultValue={this.props.item.startDate}
+                      defaultValue={this.props.staff.startDate}
                       validators={{
                         required
                       }}
@@ -199,7 +225,7 @@ export default class DetailStaff extends Component {
                     <Control.select model=".department"
                       className="form-control"
                       name='department'
-                      defaultValue={this.props.item.department.name}
+                      defaultValue={findDepartment(this.props.staff.departmentId, this.props.departments)}
                     >
                       <option>Sale</option>
                       <option>HR</option>
@@ -215,7 +241,7 @@ export default class DetailStaff extends Component {
                     <Control.text model=".salaryScale"
                       className="form-control"
                       name="salaryScale"
-                      defaultValue={this.props.item.salaryScale}
+                      defaultValue={this.props.staff.salaryScale}
                     />
                   </Col>
                 </Row>
@@ -225,7 +251,7 @@ export default class DetailStaff extends Component {
                     <Control.text model=".annualLeave"
                       className="form-control"
                       name="annualLeave"
-                      defaultValue={this.props.item.annualLeave}
+                      defaultValue={this.props.staff.annualLeave}
                     />
                   </Col>
                 </Row>
@@ -235,7 +261,7 @@ export default class DetailStaff extends Component {
                     <Control.text model=".overTime"
                       className="form-control"
                       name="overTime"
-                      defaultValue={this.props.item.overTime}
+                      defaultValue={this.props.staff.overTime}
                     />
                   </Col>
                 </Row>

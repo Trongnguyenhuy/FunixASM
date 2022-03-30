@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, CardBody, CardTitle, CardText, BreadcrumbItem, Breadcrumb } from 'reactstrap';
+import {
+    Card, CardImg, CardBody, CardTitle,
+    Button, BreadcrumbItem, Breadcrumb
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Loading from './LoadingComponent';
 import { FadeTransform } from 'react-animation-components';
 
-
-
-export default function Department(props) {
-
+const RenderDetailDepartment = (props) => {
     if (props.staffIsLoading || props.departmentIsLoading) {
         return (
             <div className="container">
@@ -17,7 +17,7 @@ export default function Department(props) {
             </div>
         );
     } else if (props.staffErrMess !== null || props.departmentErrMess !== null) {
-
+        console.log(props);
         const errMess = props.staffErrMess !== null ? props.staffErrMess : props.departmentErrMess;
         return (
             <div className="container">
@@ -26,45 +26,66 @@ export default function Department(props) {
                 </div>
             </div>
         );
-    } else if (props.staffs !== null && props.departments !== null) {
-        const department = props.departments.map((item, index) => {
+    } else {
+
+        const staff = props.staffs.map((item) => {
             return (
-                <div key={item.id} className="col-12 col-sm-6 col-md-4 align-self-center">
+
+                <div key={item.id} className="col-12 col-sm-6 col-md-2 align-self-center">
                     <FadeTransform in
                         transformProps={{
                             exitTransform: 'scale(0.5) translateY(-50%)'
                         }}
                     >
-                        <Card className='m-1' style={{ height: '180px', width: '100%'}}>
+
+                        <Card className='m-1'>
+                            <Link to={`/stafflist/${item.id}`}>
+                                <CardImg
+                                    alt={item.name}
+                                    src={item.image}
+                                    top
+                                    width="100%"
+                                    height="auto"
+                                />
+                            </Link>
                             <CardBody>
-                                <Link to={`/departments/${item.id}`}>
-                                    <CardTitle tag='h5'>{item.name}</CardTitle>
-                                    <CardText>
-                                        Số lượng nhân viên: {props.staffs.filter((staff) => staff.departmentId === item.id).length}
-                                    </CardText>
-                                </Link>
+                                <CardTitle tag="h6"
+                                    style={{
+                                        color: 'black'
+                                    }}
+                                >
+                                    {item.name}
+                                </CardTitle>
+                                <Button onClick={() => { props.removeStaff(item.id) }}
+                                >
+                                    Xóa
+                                </Button>
                             </CardBody>
                         </Card>
                     </FadeTransform>
                 </div>
+
             );
         });
+
         return (
             <div className="container">
                 <div className="row mt-2">
                     <Breadcrumb>
-                        <Link to="/stafflist">Nhân Viên</Link>
                         <BreadcrumbItem>
+                            <Link to="/department">Phòng Ban</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>
-                            Phòng Ban
+                            {props.departmentName.name}
                         </BreadcrumbItem>
                     </Breadcrumb>
                 </div>
                 <div className="row">
-                    {department}
+                    {staff}
                 </div>
             </div>
         );
     }
 }
+
+export default RenderDetailDepartment;

@@ -2,34 +2,66 @@
 import React, { Component } from 'react';
 import StaffList from './StaffListComponent';
 import DetailStaff from './DetailStaffComponent';
-import { STAFFS, DEPARTMENTS } from '../shares/staffs';
+import RenderDetailDepartment from './DetailDepartment';
 import Header from './HeaderComponent';
 import Footer from './footerComponent';
 import Department from './DepartmentComponent';
 import Salary from './SalaryComponent';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { addStaff, fetchStaff, fetchDepartment, fetchSalary } from '../Redux/actionCreators';
 
-const findDepartmentIndex = (departmentName, departments) => {
-    for (let i = 0; i < departments.length; i++) {
-        if (departmentName === departments[i].name) {
-            return i;
-        }
-    }
+const mapStateToProps = state => {
+    return {
+        staffs: state.staffs,
+        departments: state.departments,
+        salary: state.salary
+    };
 }
 
+const mapDispatchToProps = (dispatch) => ({
+    addStaff: (
+        staffName,
+        staffDoB,
+        staffSalaryScale,
+        staffStartDate,
+        staffDepartment,
+        staffAnnualLeave,
+        staffOverTime
+    ) => dispatch(addStaff(
+        staffName,
+        staffDoB,
+        staffSalaryScale,
+        staffStartDate,
+        staffDepartment,
+        staffAnnualLeave,
+        staffOverTime
+    )),
 
-export default class Main extends Component {
+    fetchStaff: () => { dispatch(fetchStaff()) },
+    fetchDepartment: () => { dispatch(fetchDepartment()) },
+    fetchSalary: () => { dispatch(fetchSalary()) },
+});
+
+
+class Main extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            staffs: STAFFS,
-            departments: DEPARTMENTS,
-            selectedStaff: STAFFS[0],
-            sortOption: 'ten'
+            selectedStaff: this.props.staffs[0],
+            sortOption: 'ten',
+            searchArray: [],
+            sortArray: []
         }
 
         this.handleSort = this.handleSort.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.fetchStaff();
+        this.props.fetchDepartment();
+        this.props.fetchSalary();
     }
 
     staffSelected = (item) => {
@@ -38,82 +70,13 @@ export default class Main extends Component {
         });
     }
 
-    addStaff = (staff) => {
-        staff.id = this.state.staffs.length;
-        staff.image = '/assets/images/alberto.png';
-        staff.department = this.state.departments[findDepartmentIndex(staff.department, this.state.departments)];
-        this.setState({
-            staffs: [...this.state.staffs, staff]
-        })
-    }
-
-    updateStaff = (staff) => {
-        let aUpdateStaff = this.state.staffs.filter((item) => item.id === staff.id)[0];
-        aUpdateStaff.name = staff.name;
-        aUpdateStaff.doB = staff.doB;
-        aUpdateStaff.salaryScale = staff.salaryScale;
-        aUpdateStaff.startDate = staff.startDate;
-        aUpdateStaff.department = this.state.departments[findDepartmentIndex(staff.department, this.state.departments)];
-        aUpdateStaff.annualLeave = staff.annualLeave;
-        aUpdateStaff.overTime = staff.overTime;
-
-    }
-
-    removeStaff = (staffId) => {
-
-        let aRemoveStaff = [
-            ...this.state.staffs.slice(0, staffId),
-            ...this.state.staffs.slice(staffId + 1, this.state.staffs.length)
-        ];
-
-
-        for (let i = 0; i < aRemoveStaff.length; i++) {
-            aRemoveStaff[i].id = i;
-        }
-
-        this.setState({
-            staffs: aRemoveStaff
-        })
-    }
 
     searchStaff = (sWord) => {
+        let aSearchStaff = [...this.props.staffs.staffs.filter((staff) => staff.name.toLowerCase().includes(sWord.toLowerCase()))];
 
-        let sState = [...this.state.staffs.filter((staff) => staff.name.toLowerCase().includes(sWord.toLowerCase()))];
-        let sSTAFF = [...STAFFS.filter((staff) => staff.name.toLowerCase().includes(sWord.toLowerCase()))];
-
-        console.log(sState.length);
-        console.log(sSTAFF.length);
-
-
-        if (sState.length === 0 && sSTAFF.length === 0) {
-            this.setState({
-                staffs: []
-            });
-        } else if (sState.length !== 0 && sSTAFF.length === 0) {
-            this.setState({
-                staffs: sState
-            });
-        } else if (sState.length === 0 && sSTAFF.length !== 0) {
-            this.setState({
-                staffs: sSTAFF
-            });
-        } else {
-            let aSearchStaff = [...sSTAFF];
-
-            for (let i = 0; i < sSTAFF.length; i++) {
-                for (let j = 0; j < sState.length; j++) {
-                    if (sState[j].id !== sSTAFF[j].id) {
-                        aSearchStaff.push(sState[j]);
-                    }
-                }
-            }
-
-            this.setState({
-                staffs: aSearchStaff
-            });
-
-        }
-
+        this.setState({
+            searchArray: aSearchStaff
+        })
     }
 
     handleSort(event) {
@@ -122,7 +85,7 @@ export default class Main extends Component {
             case 'ten':
                 this.setState({
                     sortOption: 'ten',
-                    staffs: this.state.staffs.sort(function (a, b) {
+                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
                         const nameA = a.name.toLowerCase();
                         const nameB = b.name.toLowerCase();
                         if (nameA < nameB) {
@@ -139,7 +102,7 @@ export default class Main extends Component {
             case 'luong':
                 this.setState({
                     sortOption: 'luong',
-                    staffs: this.state.staffs.sort(function (a, b) {
+                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
                         return (a.salaryScale * 3000000 + a.overTime * 200000) - (b.salaryScale * 3000000 + b.overTime * 200000);
                     })
                 });
@@ -147,54 +110,90 @@ export default class Main extends Component {
             case 'ma':
                 this.setState({
                     sortOption: 'ma',
-                    staffs: this.state.staffs.sort(function (a, b) {
+                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
                         return a.id - b.id;
                     })
                 });
                 break;
             default:
                 this.setState({
-                    staffs: STAFFS
+                    sortArray: this.props.staffs.staffs
                 });
         }
     }
 
     render() {
-
         const StaffWithId = ({ match }) => {
+
             return (
-                <DetailStaff item={this.state.staffs.filter((item) => item.id === parseInt(match.params.staffId, 10))[0]}
-                    department={this.state.departments}
+                <DetailStaff staff={this.props.staffs.staffs.filter((item) => item.id === parseInt(match.params.staffId, 10))[0]}
+                    staffIsLoading={this.props.staffs.isLoading}
+                    staffErrMess={this.props.staffs.errMess}
+                    departments={this.props.departments.departments}
+                    departmentIsLoading={this.props.departments.isLoading}
+                    departmentErrMess={this.props.departments.errMess}
                     updateStaff={this.updateStaff}
                 />
             );
         }
 
+        const departmentWithId = ({ match }) => {
+
+
+            return (
+                <RenderDetailDepartment
+                    staffs={this.props.staffs.staffs.filter((item) => item.departmentId === match.params.departmentId)}
+                    departmentName={this.props.departments.departments.filter((item) => item.id === match.params.departmentId)[0]}
+                    staffIsLoading={this.props.staffs.isLoading}
+                    staffErrMess={this.props.staffs.errMess}
+                    departments={this.props.departments.departments}
+                    departmentIsLoading={this.props.departments.isLoading}
+                    departmentErrMess={this.props.departments.errMess}
+                    updateStaff={this.updateStaff}
+                />
+            )
+        }
+
         return (
             <div>
-                <Header searchStaff={this.searchStaff}/>
+                <Header searchStaff={this.searchStaff} />
                 <Switch>
                     <Route exact path="/stafflist" component={
                         () => <StaffList
-                            staffs={this.state.staffs}
+                            staffs={this.state.searchArray.length >= 1 ? this.state.searchArray :
+                                this.state.sortArray.length >= 1 ? this.state.sortArray : this.props.staffs.staffs}
                             staffSelected={this.staffSelected}
-                            addStaff={this.addStaff}
+                            addStaff={this.props.addStaff}
                             handleSort={this.handleSort}
                             sortOption={this.state.sortOption}
                             removeStaff={this.removeStaff}
+                            staffIsLoading={this.props.staffs.isLoading}
+                            staffErrMess={this.props.staffs.errMess}
+                            departments={this.props.departments.departments}
+                            departmentIsLoading={this.props.departments.isLoading}
+                            departmentErrMess={this.props.departments.errMess}
                         />}
                     />
                     <Route path="/stafflist/:staffId" component={StaffWithId} />
-                    <Route path="/department" component={
-                        () => <Department departments={this.state.departments}
-                            staffs={this.state.staffs}
+                    <Route exact path="/department" component={
+                        () => <Department departments={this.props.departments.departments}
+                            staffs={this.props.staffs.staffs}
+                            staffIsLoading={this.props.staffs.isLoading}
+                            staffErrMess={this.props.staffs.errMess}
+                            departmentIsLoading={this.props.departments.isLoading}
+                            departmentErrMess={this.props.departments.errMess}
                         />
                     }
                     />
+                    <Route path="/departments/:departmentId" component={departmentWithId} />
                     <Route path="/salary" component={
-                        () => <Salary staffs={this.state.staffs}
+                        () => <Salary
+                            salary={this.state.searchArray.length >= 1 ? this.state.searchArray :
+                                this.state.sortArray.length >= 1 ? this.state.sortArray : this.props.salary.salary}
                             handleSort={this.handleSort}
                             sortOption={this.state.sortOption}
+                            isLoading={this.props.salary.isLoading}
+                            errMess={this.props.salary.errMess}
                         />
                     }
                     />
@@ -205,3 +204,5 @@ export default class Main extends Component {
         )
     }
 }
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
