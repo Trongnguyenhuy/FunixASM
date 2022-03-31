@@ -74,17 +74,21 @@ export default function Salary(props) {
                                         id="sort"
                                         name="sort"
                                         type="select"
-                                        onChange={props.handleSort}
-                                        defaultValue={props.sortOption}
+                                        onChange={(event)=>{
+                                            props.sortSalary(
+                                                event.target.value
+                                            )
+                                        }}
+                                        value={props.sortSalaryOption}
                                     >
-                                        <option value="ten">
-                                            Theo tên
+                                        <option value="heso">
+                                            Theo Hệ Số Lương
                                         </option>
                                         <option value="luong">
-                                            Theo Lương
+                                            Theo Mức Lương
                                         </option>
-                                        <option value="ma">
-                                            Theo Mã Số
+                                        <option value="phongban">
+                                            Theo Phòng Ban
                                         </option>
                                     </Input>
                                 </Col>

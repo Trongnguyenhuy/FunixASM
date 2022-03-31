@@ -110,10 +110,11 @@ export default class DetailStaff extends Component {
 
   handleSubmit = (values) => {
     this.toggleModal();
-    const newStaff = { ...values };
-    newStaff.id = this.props.item.id;
-    console.log("Current state is: " + JSON.stringify(newStaff));
-    this.props.updateStaff(newStaff);
+    const updateStaff = { ...values };
+    updateStaff.id = this.props.staff.id;
+    updateStaff.image = '/assets/images/alberto.png';
+    console.log("Current state is: " + JSON.stringify(updateStaff));
+    this.props.updateStaff(updateStaff);
   }
 
   render() {
@@ -222,16 +223,16 @@ export default class DetailStaff extends Component {
                 <Row className="form-group">
                   <Label htmlFor="department" md={4}>Phòng ban:</Label>
                   <Col md={8}>
-                    <Control.select model=".department"
+                    <Control.select model=".departmentId"
                       className="form-control"
                       name='department'
-                      defaultValue={findDepartment(this.props.staff.departmentId, this.props.departments)}
+                      defaultValue={this.props.staff.departmentId}
                     >
-                      <option>Sale</option>
-                      <option>HR</option>
-                      <option>Marketing</option>
-                      <option>IT</option>
-                      <option>Finance</option>
+                      <option value='Dept01'>Sale</option>
+                      <option value='Dept02'>HR</option>
+                      <option value='Dept03'>Marketing</option>
+                      <option value='Dept04'>IT</option>
+                      <option value='Dept05'>Finance</option>
                     </Control.select>
                   </Col>
                 </Row>

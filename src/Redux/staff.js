@@ -3,7 +3,8 @@ import * as ActionTypes from './actionTypes';
 export const staffs = (state = {
     isLoading: true,
     errMess: null,
-    staffs: []
+    staffs: [],
+    sortStaffOption: null
 }, action) => {
     switch (action.type) {
         case ActionTypes.STAFF_LOADING:
@@ -20,7 +21,7 @@ export const staffs = (state = {
                 errMess: action.payload,
                 staffs: []
             };
-        case ActionTypes.RENDER_STAFF:
+        case ActionTypes.ADD_STAFFS:
             return {
                 ...state,
                 isLoading: false,
@@ -28,12 +29,33 @@ export const staffs = (state = {
                 staffs: action.payload
             };
         case ActionTypes.ADD_STAFF:
-            var staff = action.payload;
-            staff.id = state.staffs.length;
-            console.log(state.staffs.length);
             return {
                 ...state,
-                staffs: [...state.staffs, staff]
+                isLoading: false,
+                errMess: null,
+                staffs: action.payload
+            }
+        case ActionTypes.REMOVE_STAFF_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                errMess: null,
+                staffs: action.payload
+            }
+        case ActionTypes.SEARCH_STAFF_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                errMess: null,
+                staffs: action.payload
+            }
+        case ActionTypes.SORT_STAFF_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                errMess: null,
+                staffs: action.payload.staffs,
+                sortStaffOption: action.payload.option
             }
         default:
             return state;

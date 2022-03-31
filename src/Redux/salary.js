@@ -3,7 +3,8 @@ import * as ActionTypes from './actionTypes';
 export const salary = (state = {
     isLoading: true,
     errMess: null,
-    salary: []
+    salary: [],
+    sortSalaryOption: null
 }, action) => {
     switch (action.type) {
         case ActionTypes.ADD_SALARY:
@@ -26,6 +27,14 @@ export const salary = (state = {
                 isLoading: true,
                 errMess: null,
                 salary: []
+            }
+        case ActionTypes.SORT_SALARY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                errMess: null,
+                salary: action.payload.salary,
+                sortSalaryOption:action.payload.option
             }
         default:
             return state;

@@ -4,122 +4,46 @@ import StaffList from './StaffListComponent';
 import DetailStaff from './DetailStaffComponent';
 import RenderDetailDepartment from './DetailDepartment';
 import Header from './HeaderComponent';
-import Footer from './footerComponent';
+import Footer from './FooterComponent';
 import Department from './DepartmentComponent';
 import Salary from './SalaryComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addStaff, fetchStaff, fetchDepartment, fetchSalary } from '../Redux/actionCreators';
+import { 
+    fetchStaff, fetchDepartment, fetchSalary, 
+    updateStaff, removeStaff, searchStaff, sortStaff, postStaff, 
+    sortSalary 
+} from '../Redux/actionCreators';
 
 const mapStateToProps = state => {
     return {
         staffs: state.staffs,
         departments: state.departments,
-        salary: state.salary
+        salary: state.salary,
+        sortSalaryOption: state.salary.sortSalaryOption,
+        sortStaffOption: state.staffs.sortStaffOption
     };
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    addStaff: (
-        staffName,
-        staffDoB,
-        staffSalaryScale,
-        staffStartDate,
-        staffDepartment,
-        staffAnnualLeave,
-        staffOverTime
-    ) => dispatch(addStaff(
-        staffName,
-        staffDoB,
-        staffSalaryScale,
-        staffStartDate,
-        staffDepartment,
-        staffAnnualLeave,
-        staffOverTime
-    )),
-
+    postStaff: (data) => dispatch(postStaff(data)),
     fetchStaff: () => { dispatch(fetchStaff()) },
     fetchDepartment: () => { dispatch(fetchDepartment()) },
     fetchSalary: () => { dispatch(fetchSalary()) },
+    updateStaff: (data) => { dispatch(updateStaff(data)) },
+    removeStaff: (staffId,staffName) => { dispatch(removeStaff(staffId,staffName)) },
+    searchStaff: (sWord) => { dispatch(searchStaff(sWord)) },
+    sortStaff: (option) => { dispatch(sortStaff(option)) },
+    sortSalary: (option) => {dispatch(sortSalary(option))}
 });
 
 
 class Main extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            selectedStaff: this.props.staffs[0],
-            sortOption: 'ten',
-            searchArray: [],
-            sortArray: []
-        }
-
-        this.handleSort = this.handleSort.bind(this);
-    }
-
+   
     componentDidMount() {
         this.props.fetchStaff();
         this.props.fetchDepartment();
         this.props.fetchSalary();
-    }
-
-    staffSelected = (item) => {
-        this.setState({
-            selectedStaff: item
-        });
-    }
-
-
-    searchStaff = (sWord) => {
-        let aSearchStaff = [...this.props.staffs.staffs.filter((staff) => staff.name.toLowerCase().includes(sWord.toLowerCase()))];
-
-        this.setState({
-            searchArray: aSearchStaff
-        })
-    }
-
-    handleSort(event) {
-
-        switch (event.target.value) {
-            case 'ten':
-                this.setState({
-                    sortOption: 'ten',
-                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
-                        const nameA = a.name.toLowerCase();
-                        const nameB = b.name.toLowerCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-
-                        return 0;
-                    })
-                });
-                break;
-            case 'luong':
-                this.setState({
-                    sortOption: 'luong',
-                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
-                        return (a.salaryScale * 3000000 + a.overTime * 200000) - (b.salaryScale * 3000000 + b.overTime * 200000);
-                    })
-                });
-                break;
-            case 'ma':
-                this.setState({
-                    sortOption: 'ma',
-                    sortArray: this.props.staffs.staffs.sort(function (a, b) {
-                        return a.id - b.id;
-                    })
-                });
-                break;
-            default:
-                this.setState({
-                    sortArray: this.props.staffs.staffs
-                });
-        }
     }
 
     render() {
@@ -132,14 +56,12 @@ class Main extends Component {
                     departments={this.props.departments.departments}
                     departmentIsLoading={this.props.departments.isLoading}
                     departmentErrMess={this.props.departments.errMess}
-                    updateStaff={this.updateStaff}
+                    updateStaff={this.props.updateStaff}
                 />
             );
         }
 
         const departmentWithId = ({ match }) => {
-
-
             return (
                 <RenderDetailDepartment
                     staffs={this.props.staffs.staffs.filter((item) => item.departmentId === match.params.departmentId)}
@@ -156,17 +78,16 @@ class Main extends Component {
 
         return (
             <div>
-                <Header searchStaff={this.searchStaff} />
+                <Header searchStaff={this.props.searchStaff} />
                 <Switch>
                     <Route exact path="/stafflist" component={
                         () => <StaffList
-                            staffs={this.state.searchArray.length >= 1 ? this.state.searchArray :
-                                this.state.sortArray.length >= 1 ? this.state.sortArray : this.props.staffs.staffs}
+                            staffs={this.props.staffs.staffs}
                             staffSelected={this.staffSelected}
-                            addStaff={this.props.addStaff}
-                            handleSort={this.handleSort}
-                            sortOption={this.state.sortOption}
-                            removeStaff={this.removeStaff}
+                            postStaff={this.props.postStaff}
+                            sortStaff={this.props.sortStaff}
+                            sortStaffOption={this.props.sortStaffOption}
+                            removeStaff={this.props.removeStaff}
                             staffIsLoading={this.props.staffs.isLoading}
                             staffErrMess={this.props.staffs.errMess}
                             departments={this.props.departments.departments}
@@ -188,12 +109,11 @@ class Main extends Component {
                     <Route path="/departments/:departmentId" component={departmentWithId} />
                     <Route path="/salary" component={
                         () => <Salary
-                            salary={this.state.searchArray.length >= 1 ? this.state.searchArray :
-                                this.state.sortArray.length >= 1 ? this.state.sortArray : this.props.salary.salary}
-                            handleSort={this.handleSort}
-                            sortOption={this.state.sortOption}
+                            salary={this.props.salary.salary}
+                            sortSalary={this.props.sortSalary}
                             isLoading={this.props.salary.isLoading}
                             errMess={this.props.salary.errMess}
+                            sortSalaryOption={this.props.sortSalaryOption}
                         />
                     }
                     />

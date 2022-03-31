@@ -14,14 +14,6 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
-const findDepartmentIndex = (departmentName, departments) => {
-    for (let i = 0; i < departments.length; i++) {
-        if (departmentName === departments[i].name) {
-            return i;
-        }
-    }
-}
-
 
 
 
@@ -36,7 +28,7 @@ const RenderStaff = ({ staffs, removeStaff }) => {
     } else {
         const staff = staffs.map((item) => {
             return (
-                <div key={item.id} className="col-12 col-sm-4 col-md-2 align-self-center">
+                <div key={item.id} className="col-12 col-sm-4 col-lg-2 align-self-center">
                     <FadeTransform in
                         transformProps={{
                             exitTransform: 'scale(0.5) translateY(-50%)'
@@ -60,7 +52,7 @@ const RenderStaff = ({ staffs, removeStaff }) => {
                                 >
                                     {item.name}
                                 </CardTitle>
-                                <Button onClick={() => { removeStaff(item.id) }}
+                                <Button onClick={() => { removeStaff(item.id, item.name) }}
                                 >
                                     Xóa
                                 </Button>
@@ -101,16 +93,12 @@ class StaffList extends Component {
 
     handleSubmit = (values) => {
         this.toggleModal();
-        console.log("Current state is: " + JSON.stringify(values));
-        this.props.addStaff(
-            values.name,
-            values.doB,
-            values.salaryScale,
-            values.startDate,
-            values.departmentId,
-            values.annualLeave,
-            values.overTime
-        );
+
+        let newStaff = { ...values };
+        newStaff.id = this.props.staffs.length;
+        newStaff.image = '/assets/images/alberto.png';
+
+        this.props.postStaff(newStaff);
     }
 
     render() {
@@ -156,8 +144,13 @@ class StaffList extends Component {
                                             id="sort"
                                             name="sort"
                                             type="select"
-                                            onChange={this.props.handleSort}
-                                            defaultValue={this.props.sortOption}
+                                            onChange={(event) => {
+                                                this.props.sortStaff(
+                                                    event.target.value
+                                                )
+                                            }
+                                            }
+                                            value={this.props.sortStaffOption}
                                         >
                                             <option value="ten">
                                                 Theo tên
@@ -255,7 +248,7 @@ class StaffList extends Component {
                                     <Col md={8}>
                                         <Control.select model=".departmentId"
                                             className="form-control"
-                                            defaultValue='Sale'
+                                            defaultValue='Dept01'
                                             name='department'
                                         >
                                             <option value='Dept01'>Sale</option>
