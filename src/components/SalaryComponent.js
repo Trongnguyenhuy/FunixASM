@@ -5,10 +5,12 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
+// hàm tính toán mức lương theo hệ số lương và thời gian làm thêm
 const salaryCalculate = (scale, overTime) => {
     return (scale * 3000000 + overTime * 200000);
 }
 
+//Function component reder ra bảng lương của App
 export default function Salary(props) {
 
     document.title = `Bảng Lương || Ứng dụng quản lý nhân sự`;

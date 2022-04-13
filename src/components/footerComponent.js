@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// Function component render ra footer cho app
 export default function Footer(props) {
     return (
         <div className="footer mt-2">
@@ -31,7 +32,7 @@ export default function Footer(props) {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-auto">
-                        <p>© Copyright 2018 Ristorante Con Fusion</p>
+                        <p>© Copyright 2022 Ristorante Con Fusion</p>
                     </div>
                 </div>
             </div>

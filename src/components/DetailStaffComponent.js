@@ -8,10 +8,13 @@ import {
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import dateFormat from 'dateformat';
 import { Link } from 'react-router-dom';
+
+// Đặt điều kiện cho input: đòi hỏi nhập, chiều dài nhập vào tối thiểu và tối đa số ký tự
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
+// Function component nhận vào 2 props item và toggleModal để reder ra thông tin chi tiết nhân viên và button update nội dung
 const RenderDetailStaff = ({ item, toggleModal }) => {
 
   document.title = `${item.name} || Ứng dụng quản lý nhân sự`;
@@ -76,7 +79,11 @@ const RenderDetailStaff = ({ item, toggleModal }) => {
   );
 }
 
-
+// Class component reder ra card nhân viên và modal update nội dung gồm:
+// local state isModalOpen kiểm soát trạng thái đóng mở của modal update
+// Method toggleModal set giá trị của local state isModalOpen
+// Method handleSubmit đóng modal, gọi hàm updateStaffs ở main component thông qua props
+//Form trong modal sử dụng react-redux-form để kiểm soát nhập dữ liệu form
 export default class DetailStaff extends Component {
 
   constructor(props) {

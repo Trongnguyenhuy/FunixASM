@@ -9,6 +9,7 @@ import Department from './DepartmentComponent';
 import Salary from './SalaryComponent';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+// Hàm tìm index của department theo tên department 
 const findDepartmentIndex = (departmentName, departments) => {
     for (let i = 0; i < departments.length; i++) {
         if (departmentName === departments[i].name) {
@@ -17,7 +18,8 @@ const findDepartmentIndex = (departmentName, departments) => {
     }
 }
 
-
+// Component chính ở đỉnh cấp props cho các component khác bên dưới và lưu trữ
+// state của toàn bộ app
 export default class Main extends Component {
     constructor(props) {
         super(props);
@@ -31,22 +33,29 @@ export default class Main extends Component {
 
         this.handleSort = this.handleSort.bind(this);
     }
-
+    
+    // method của class Main nhận đối tượng là dữ liệu của một nhân viên được chọn và set dữ liệu 
+    // này vào state 
     staffSelected = (item) => {
         this.setState({
             selectedStaff: item
         });
     }
 
+
+    // Method của class Main nhận vào dữ liệu của form thêm nhân viên sao đó gán id, image và department
+    // cho nhân viên vừa được nhập và set vào property staffs của state
     addStaff = (staff) => {
         staff.id = this.state.staffs.length;
         staff.image = '/assets/images/alberto.png';
         staff.department = this.state.departments[findDepartmentIndex(staff.department, this.state.departments)];
-        this.setState({
-            staffs: [...this.state.staffs, staff]
+        this.setState((state) => {
+            state.staffs = [...state.staffs, staff];
         })
     }
 
+    // Method của class Main nhận vào dữ liệu từ form cập nhật sau đó update lại dữ liệu cho nhân viên
+    // được cập nhật thông tin bằng cách tìm kiếm nhân viên theo id
     updateStaff = (staff) => {
         let aUpdateStaff = this.state.staffs.filter((item) => item.id === staff.id)[0];
         aUpdateStaff.name = staff.name;
@@ -59,6 +68,8 @@ export default class Main extends Component {
 
     }
 
+    // Method của class Main nhận vào là Id của nhân viên muốn xóa, tạo array staffs trong state mới 
+    // kèm với việc set lại id cho các nhân viên còn lại trong mảng
     removeStaff = (staffId) => {
 
         let aRemoveStaff = [
@@ -76,6 +87,8 @@ export default class Main extends Component {
         })
     }
 
+    // Method của class Main nhận vào từ khóa muốn search sau đó sẽ search nhân viên trong state và trong state
+    // files staffs để tìm ra nhân viên cần tìm theo tên
     searchStaff = (sWord) => {
 
         let sState = [...this.state.staffs.filter((staff) => staff.name.toLowerCase().includes(sWord.toLowerCase()))];
@@ -116,6 +129,8 @@ export default class Main extends Component {
 
     }
 
+    // Method của class Main nhận vào sự kiện chon option sort và sắp xếp nhân viên theo ten, mức lương
+    // và id
     handleSort(event) {
 
         switch (event.target.value) {
@@ -160,7 +175,7 @@ export default class Main extends Component {
     }
 
     render() {
-
+        // Function component nhận vào Object match, lọc ra nhân viên có id tương ứng với staffId trong match
         const StaffWithId = ({ match }) => {
             return (
                 <DetailStaff item={this.state.staffs.filter((item) => item.id === parseInt(match.params.staffId, 10))[0]}
@@ -172,8 +187,9 @@ export default class Main extends Component {
 
         return (
             <div>
-                <Header searchStaff={this.searchStaff}/>
+                <Header searchStaff={this.searchStaff}/> {/* Component header  */}
                 <Switch>
+                    {/*exact chỉ định rõ path match khi có nhiều path match*/}
                     <Route exact path="/stafflist" component={
                         () => <StaffList
                             staffs={this.state.staffs}

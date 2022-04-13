@@ -4,7 +4,12 @@ import {
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
-
+// Class component reder ra phần header của App
+// có local state isNavOpen cần thiết cho việc toogle Nav ở sceen nhỏ
+// 3 method gồm:
+// toggleNav cho việc thay đổi local state isNavOpen
+// handleSearch cho việc tìm kiếm bằng cách truyền giá trị tìm kiếm từ input vào hàm searchStaff ở main thông qua props
+// render
 export default class HeaderComponent extends Component {
 
     constructor(props) {
@@ -68,8 +73,10 @@ export default class HeaderComponent extends Component {
                                             <Input type='text'
                                                 id='search'
                                                 name='search'
-                                                innerRef={(input) => this.search = input}
+                                                innerRef={(input) => this.search = input}  
                                             />
+                                            {/* Input element được gắn innerRef để có thể truy cập trực tiếp mà không cần thông qua props hay state
+                                            để re-render lại */ }
                                         </Col>
                                         <Col xs={4}>
                                             <Button type='submit' value='submit'

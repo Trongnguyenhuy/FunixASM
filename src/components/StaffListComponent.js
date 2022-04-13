@@ -8,13 +8,15 @@ import {
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
+// Hàm kiểm tra xem có nhập vào không và chiều dài tối đa tối thiểu của chuỗi nhập vào
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
 
 
-
+//Function component nhận vào 2 props staffs và removeStaff để render ra các card bootstrap nhân viên
+// và button gọi hàm removeStaff trong Main được truyền qua props
 const RenderStaff = ({ staffs, removeStaff }) => {
 
     if (staffs === []) {
@@ -63,7 +65,11 @@ const RenderStaff = ({ staffs, removeStaff }) => {
     }
 }
 
-
+// Class component render card nhân viên và modal thêm nhân viên mới, gồm :
+// 1 local state isModalOpen kiểm soát trạng thái đóng mở của modal thêm nhân viên.
+// Method toggleModal set giá trị cho local state isModalOpen
+// Method handleSubmit gọi hàm addStaff trong Main thông qua props để thêm vào nhân viên mới
+//Form trong modal sử dụng react-redux-form để kiểm soát nhập dữ liệu form
 class StaffList extends Component {
     constructor(props) {
         super(props);

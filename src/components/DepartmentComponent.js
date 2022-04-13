@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, CardBody, CardTitle, CardText, BreadcrumbItem, Breadcrumb } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-
+// Function component render ra các card bootstrap phòng ban.
+// 
 
 export default function Department(props) {
     document.title = `Phòng Ban || Ứng dụng quản lý nhân sự`;
@@ -14,11 +15,14 @@ export default function Department(props) {
                     <CardBody>
                         <CardTitle tag='h5'>{item.name}</CardTitle>
                         <CardText>Số lượng nhân viên: {props.staffs.filter((staff) => staff.department.name === item.name).length}</CardText>
+                        {/* số lượng nhân viên trong mỗi phòng ban được tính bằng độ dài mảng trả về bởi hàm filter khi lọc tên 
+                        phòng ban trong mảng các nhân viên */}
                     </CardBody>
                 </Card>
             </div>
         );
     })
+
     return (
         <div className="container">
             <div className="row mt-2">
